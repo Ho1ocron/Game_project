@@ -1,14 +1,8 @@
 import pygame
-from random import randint
 import sys
-from pathlib import Path
 import os.path
 
-
 script_dir = os.path.dirname(__file__)
-rand_x, rand_y = randint(100, 800), randint(100, 500)
-main_x, main_y =  100, 100
-
 
 
 def load_image(name):
@@ -21,8 +15,7 @@ def load_image(name):
 
 
 def _main_sprite(main_sprite_name):
-    main_sprite_path = os.path.join(script_dir, main_sprite_name)
-    main_sprite = load_image(main_sprite_path)
+    main_sprite = pygame.image.load(os.path.join(script_dir, main_sprite_name)).convert_alpha()
     main_sprite = pygame.transform.scale(main_sprite, (100, 200))
     main_sprite_versions = {
         0: pygame.transform.rotate(main_sprite, 0), #: Zero degrees
@@ -38,8 +31,7 @@ def _main_sprite(main_sprite_name):
 
 
 def _enemy_sprite(enemy_sprite_name):
-    enemy_sprite_path = os.path.join(script_dir, enemy_sprite_name)
-    enemy_sprite = load_image(enemy_sprite_path)
+    enemy_sprite = pygame.image.load(os.path.join(script_dir, enemy_sprite_name)).convert_alpha()
     enemy_sprite = pygame.transform.scale(enemy_sprite, (200, 200))
     return enemy_sprite
 
