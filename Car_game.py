@@ -2,9 +2,9 @@ import os
 import sys
 import pygame
 from random import randint
-from pathlib import Path
 import os.path
 import car_game_sprites as CGS
+import time
 
 
 #: Loading sprite
@@ -16,17 +16,31 @@ def load_image(name):
     image = pygame.image.load(fullname)
     return image
 
-#: Creating a window
-screen = pygame.display.set_mode((1000, 600))
-pygame.init()
-
-#: sprites coords
-rand_x, rand_y = randint(0, 900), randint(0, 600)
-loc_x, loc_y = 0, 0
 
 background = CGS._background("Venator.jpg")
 main_sprite = CGS._main_sprite("lada0.png")
 enemy_sprite = CGS._enemy_sprite("Darth_Vader.jpg")
+
+
+#: Creating a window
+screen = pygame.display.set_mode((1000, 600))
+pygame.init()
+font = pygame.font.Font(None, 20)
+
+
+#: sprites coords
+rand_x, rand_y = randint(0, 900), randint(0, 600)
+loc_x, loc_y = 0, 0
+print(f"Enemy sprite coords: {rand_x, rand_y}")
+
+
+#: Hitpoints
+main_sprite_hp = 100
+timer = 100
+hp_count = font.render("1", False, (0, 180, 0))
+place = hp_count.get_rect(center=(200, 150))
+pygame.display.update()
+
 
 #: Logical arguments for moving
 up = False
@@ -102,10 +116,21 @@ while running:
     if down and left == True:
         screen.blit(main_sprite[315], (loc_x, loc_y))
 
-
     #: Game over
-    if loc_y and loc_x == rand_x and rand_y:
-        running = False
-
+    if rand_x and rand_y != loc_x and loc_y:
+        if rand_x >= loc_x:
+            rand_x -= 1
+        elif rand_x <= loc_x:
+            rand_x += 1
+        if rand_y >= loc_y:
+            rand_y -= 1
+        elif rand_y <= loc_y:
+            rand_y += 1
+        if rand_x and rand_y == loc_x and loc_y:
+            main_sprite_hp -= 10
+            print(f"Your HP: {main_sprite_hp}")
+            if main_sprite_hp == 0:
+                running = False
+    
     pygame.display.update()
     pygame.display.flip()
