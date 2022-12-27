@@ -4,42 +4,39 @@ import pygame
 from random import randint
 import os.path
 import car_game_sprites as CGS
-import time
 
 
-#: Loading sprite
-def load_image(name):
-    fullname = os.path.join(name)
-    if not os.path.isfile(fullname):
-        print(f"File with image '{fullname}' not found.")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    return image
-
-
-background = CGS._background("Venator.jpg")
-main_sprite = CGS._main_sprite("lada0.png")
-enemy_sprite = CGS._enemy_sprite("Darth_Vader.jpg")
-
+width, height = 1600, 1000
 
 #: Creating a window
-screen = pygame.display.set_mode((1000, 600))
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Car game")
 pygame.init()
 font = pygame.font.Font(None, 20)
 
 
+#: Loading sprite
+script_dir = os.path.dirname(__file__)
+background = CGS._background("Venator.jpg")
+main_sprite = CGS._main_sprite("boss_body.png")
+enemy_sprite = CGS._enemy_sprite("ring.png")
+
+
 #: sprites coords
 rand_x, rand_y = randint(0, 900), randint(0, 600)
-loc_x, loc_y = 0, 0
+main_x, main_y = 100, 100
 print(f"Enemy sprite coords: {rand_x, rand_y}")
 
 
 #: Hitpoints
 main_sprite_hp = 100
 timer = 100
-hp_count = font.render("1", False, (0, 180, 0))
-place = hp_count.get_rect(center=(200, 150))
-pygame.display.update()
+print(type(enemy_sprite))
+
+
+#: Collision of sprites
+main_sprite_rect = main_sprite[0].get_rect(centerx=int(main_x), centery=int(main_y))
+enemy_sprite_rect = enemy_sprite.get_rect(center=(rand_x, rand_y))
 
 
 #: Logical arguments for moving
@@ -53,13 +50,12 @@ running = True
 #: Game loop
 while running:
     screen.blit(background, (0, 0)) #: Background initialization
-    screen.blit(main_sprite[0], (loc_x, loc_y)) #: Main sprite initialization
+    screen.blit(main_sprite[0], (main_x, main_y)) #: Main sprite initialization
     screen.blit(enemy_sprite, (rand_x, rand_y)) #: Enemy sprite initialization
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
@@ -70,6 +66,8 @@ while running:
                 left = True
             if event.key == pygame.K_DOWN:
                 down = True
+            if event.key == pygame.K_ESCAPE:
+                sys.exit()
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
@@ -82,55 +80,73 @@ while running:
                 down = False
 
 
+    #: Main sprite moving
     if up == True:
-        loc_y -= 2
-        screen.blit(main_sprite[180], (loc_x, loc_y))
+        main_y -= 5
+        screen.blit(background, (0, 0))
+        screen.blit(enemy_sprite, (rand_x, rand_y))
+        screen.blit(main_sprite[270], (main_x, main_y))
     if down == True:
-        loc_y += 2
-        screen.blit(main_sprite[0], (loc_x, loc_y))
+        main_y += 5
+        screen.blit(background, (0, 0))
+        screen.blit(enemy_sprite, (rand_x, rand_y))
+        screen.blit(main_sprite[90], (main_x, main_y))
     if right == True:
-        loc_x += 2
-        screen.blit(main_sprite[90], (loc_x, loc_y))
+        main_x += 5
+        screen.blit(background, (0, 0))
+        screen.blit(enemy_sprite, (rand_x, rand_y))
+        screen.blit(main_sprite[180], (main_x, main_y))
     if left == True:
-        loc_x -= 2
-        screen.blit(main_sprite[270], (loc_x, loc_y))
+        main_x -= 5
+        screen.blit(background, (0, 0))
+        screen.blit(enemy_sprite, (rand_x, rand_y))
+        screen.blit(main_sprite[0], (main_x, main_y))
 
-
-    if loc_x <= 0:
-        loc_x = 50
-    if loc_x >= 1000:
-        loc_x = 900
-    if loc_y <= 0:
-        loc_y = 20
-    if loc_y >= 600:
-        loc_y = 500
+    #: Walls
+    if main_x < 0:
+        main_x = 1590
+    if main_x > 1600:
+        main_x = 10
+    if main_y < 0:
+        main_y = 990
+    if main_y > 1000:
+        main_y = 10
 
 
     #: Sprite transformation
     if up and right == True:
-        screen.blit(main_sprite[135], (loc_x, loc_y))
+        screen.blit(background, (0, 0))
+        screen.blit(enemy_sprite, (rand_x, rand_y))
+        screen.blit(main_sprite[225], (main_x, main_y))
     if down and right == True:
-        screen.blit(main_sprite[45], (loc_x, loc_y))
+        screen.blit(background, (0, 0))
+        screen.blit(enemy_sprite, (rand_x, rand_y))
+        screen.blit(main_sprite[135], (main_x, main_y))
     if up and left == True:
-        screen.blit(main_sprite[225], (loc_x, loc_y))
+        screen.blit(background, (0, 0))
+        screen.blit(enemy_sprite, (rand_x, rand_y))
+        screen.blit(main_sprite[315], (main_x, main_y))
     if down and left == True:
-        screen.blit(main_sprite[315], (loc_x, loc_y))
+        screen.blit(background, (0, 0))
+        screen.blit(enemy_sprite, (rand_x, rand_y))
+        screen.blit(main_sprite[45], (main_x, main_y))
 
     #: Game over
-    if rand_x and rand_y != loc_x and loc_y:
-        if rand_x >= loc_x:
-            rand_x -= 1
-        elif rand_x <= loc_x:
-            rand_x += 1
-        if rand_y >= loc_y:
-            rand_y -= 1
-        elif rand_y <= loc_y:
-            rand_y += 1
-        if rand_x and rand_y == loc_x and loc_y:
-            main_sprite_hp -= 10
-            print(f"Your HP: {main_sprite_hp}")
-            if main_sprite_hp == 0:
-                running = False
+    if rand_x and rand_y != main_x and main_y:
+        if rand_x <= main_x:
+            rand_x += 2
+        if rand_y <= main_y:
+            rand_y += 2
+        if rand_x >= main_x:
+            rand_x -= 2
+        if rand_y >= main_y:
+            rand_y -= 2     
+        #rand_x, rand_y = 800, 500
+    #if main_sprite_rect.collidepoint(enemy_sprite_rect):
+        #main_sprite_hp -= 10
+        #print()
+    if main_sprite_hp == 0:
+        sys.exit()
     
     pygame.display.update()
     pygame.display.flip()
