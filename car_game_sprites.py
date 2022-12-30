@@ -1,22 +1,12 @@
 import pygame
-import sys
 import os.path
 
 script_dir = os.path.dirname(__file__)
 
 
-def load_image(name):
-    fullname = os.path.join(name)
-    if not os.path.isfile(fullname):
-        print(f"File with image '{fullname}' not found.")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    return image
-
-
 def _main_sprite(main_sprite_name):
     main_sprite = pygame.image.load(os.path.join(script_dir, main_sprite_name)).convert_alpha()
-    main_sprite = pygame.transform.scale(main_sprite, (100, 200))
+    main_sprite = pygame.transform.scale(main_sprite, (200, 150))
     main_sprite_versions = {
         0: pygame.transform.rotate(main_sprite, 0), #: Zero degrees
         45: pygame.transform.rotate(main_sprite, 45),   #: 45 degrees
@@ -35,15 +25,19 @@ def _enemy_sprite(enemy_sprite_name):
     enemy_sprite = pygame.transform.scale(enemy_sprite, (200, 200))
     return enemy_sprite
 
-
 def _background(background_name):
-    background_path = os.path.join(script_dir, background_name)
-    background = load_image(background_path)
+    background = pygame.image.load(os.path.join(script_dir, background_name)).convert_alpha()
     background = pygame.transform.scale(background, (1920, 1080))
     return background
+
+def _main_menu(main_menu_name):
+    main_menu = pygame.image.load(os.path.join(script_dir, main_menu_name)).convert_alpha()
+    main_menu = pygame.transform.scale(main_menu, (1920, 1080))
+    return main_menu
 
     
 if __name__ == "__main__":
     _enemy_sprite()
     _main_sprite()
     _background()
+    _main_menu()
